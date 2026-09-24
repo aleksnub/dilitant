@@ -1,0 +1,137 @@
+/* ===== Основное бургер-меню ===== */
+
+.site-menu-toggle {
+    position: fixed;
+    top: max(18px, env(safe-area-inset-top));
+    right: max(18px, env(safe-area-inset-right));
+    z-index: 1002;
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: 1px solid rgba(244, 232, 198, 0.55);
+    border-radius: 50%;
+    background: rgba(5, 5, 7, 0.72);
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.site-menu-toggle span {
+    display: block;
+    width: 23px;
+    height: 2px;
+    background: #f4e8c6;
+}
+
+.site-menu-toggle:hover,
+.site-menu-toggle:focus-visible {
+    border-color: #f4e8c6;
+    background: rgba(5, 5, 7, 0.92);
+}
+
+.site-menu-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.68);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.site-menu-backdrop.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.site-menu-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 1001;
+    width: min(420px, 92vw);
+    height: 100vh;
+    height: 100dvh;
+    padding:
+        max(80px, calc(env(safe-area-inset-top) + 70px))
+        36px
+        40px;
+    background: #0b0a09;
+    border-left: 1px solid rgba(244, 232, 198, 0.18);
+    box-shadow: -20px 0 60px rgba(0, 0, 0, 0.45);
+    transform: translateX(100%);
+    visibility: hidden;
+    transition:
+        transform 0.28s ease,
+        visibility 0.28s ease;
+}
+
+.site-menu-panel.is-open {
+    transform: translateX(0);
+    visibility: visible;
+}
+
+.site-menu-close {
+    position: absolute;
+    top: max(18px, env(safe-area-inset-top));
+    right: max(18px, env(safe-area-inset-right));
+    width: 52px;
+    height: 52px;
+    border: 0;
+    background: transparent;
+    color: #f4e8c6;
+    font: inherit;
+    font-size: 42px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.site-menu-nav {
+    display: flex;
+    flex-direction: column;
+}
+
+.site-menu-nav a {
+    display: block;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(244, 232, 198, 0.16);
+    color: #f4e8c6;
+    font-size: clamp(22px, 3vw, 30px);
+    line-height: 1.2;
+}
+
+.site-menu-nav a:hover,
+.site-menu-nav a:focus-visible {
+    padding-left: 10px;
+}
+
+body.site-menu-open {
+    overflow: hidden;
+}
+
+@media (max-width: 600px) {
+    .site-menu-toggle {
+        top: max(12px, env(safe-area-inset-top));
+        right: max(12px, env(safe-area-inset-right));
+        width: 48px;
+        height: 48px;
+    }
+
+    .site-menu-panel {
+        width: min(360px, 92vw);
+        padding-left: 26px;
+        padding-right: 26px;
+    }
+
+    .site-menu-close {
+        top: max(12px, env(safe-area-inset-top));
+        right: max(12px, env(safe-area-inset-right));
+        width: 48px;
+        height: 48px;
+    }
+}

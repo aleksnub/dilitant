@@ -1,0 +1,63 @@
+services:
+
+  dilitant_land_wp:
+
+    image: wordpress:latest
+
+    container_name: dilitant_land_wp
+
+    ports:
+      - "8094:80"
+
+    environment:
+      WORDPRESS_DB_HOST: dilitant_land_db:3306
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      WORDPRESS_TABLE_PREFIX: wp_
+
+    volumes:
+      - ./wordpress:/var/www/html
+      - ./private:/var/www/dilitant-private
+      - ./php/uploads.ini:/usr/local/etc/php/conf.d/dilitant-uploads.ini:ro
+
+    depends_on:
+      - dilitant_land_db
+
+    restart: unless-stopped
+
+    networks:
+      - dilitant_land_network
+
+
+  dilitant_land_db:
+
+    image: mariadb:11.8.5
+
+    container_name: dilitant_land_db
+
+    environment:
+      MARIADB_DATABASE: ${WORDPRESS_DB_NAME}
+      MARIADB_USER: ${WORDPRESS_DB_USER}
+      MARIADB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+
+    volumes:
+      - dilitant_land_db_volume:/var/lib/mysql
+
+    restart: unless-stopped
+
+    networks:
+      - dilitant_land_network
+
+
+volumes:
+
+  dilitant_land_db_volume:
+    driver: local
+
+
+networks:
+
+  dilitant_land_network:
+    driver: bridge

@@ -1,0 +1,188 @@
+/* «Дилетант» в Армении */
+
+.armenia-presence {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(4.5rem, 8vw, 8rem) 2rem;
+    background:
+        radial-gradient(circle at 20% 16%, rgba(212, 183, 97, 0.12), transparent 28rem),
+        radial-gradient(circle at 86% 20%, rgba(255, 223, 142, 0.08), transparent 22rem),
+        linear-gradient(180deg, #080706 0%, #16100b 100%);
+    color: #f4e8c6;
+}
+
+.armenia-presence::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(90deg, rgba(255, 223, 142, 0.05) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255, 223, 142, 0.035) 1px, transparent 1px);
+    background-size: 4.5rem 4.5rem;
+    opacity: 0.42;
+    pointer-events: none;
+}
+
+.armenia-presence__inner {
+    position: relative;
+    z-index: 2;
+    max-width: 78rem;
+    margin: 0 auto;
+}
+
+.armenia-presence__header {
+    max-width: 58rem;
+    margin: 0 auto 3.5rem;
+    text-align: center;
+}
+
+.armenia-presence__label {
+    margin: 0 0 1rem;
+    color: #d4b761;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+}
+
+.armenia-presence__header h2 {
+    margin: 0 0 1.2rem;
+    color: #f8e8bf;
+    font-size: clamp(2rem, 5vw, 4.2rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+}
+
+.armenia-presence__header p {
+    margin: 0;
+    color: #d4c093;
+    font-size: clamp(1rem, 1.35vw, 1.28rem);
+    line-height: 1.8;
+}
+
+.armenia-presence__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+.armenia-presence-card {
+    position: relative;
+    min-height: 100%;
+    padding: clamp(1.6rem, 3vw, 2.4rem);
+    border: 1px solid rgba(255, 223, 142, 0.2);
+    background:
+        linear-gradient(180deg, rgba(255, 223, 142, 0.055), rgba(255, 223, 142, 0.018)),
+        rgba(10, 8, 7, 0.72);
+    box-shadow: 0 1.8rem 4rem rgba(0, 0, 0, 0.22);
+}
+
+.armenia-presence-card--sales {
+    border-color: rgba(240, 205, 120, 0.34);
+}
+
+.armenia-presence-card__kicker {
+    margin: 0 0 0.85rem;
+    color: #d4b761;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.armenia-presence-card h3 {
+    margin: 0 0 1rem;
+    color: #fff0c8;
+    font-size: clamp(1.65rem, 2.4vw, 2.55rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+}
+
+.armenia-presence-card__text {
+    margin: 0 0 1.25rem;
+    color: #d7c091;
+    line-height: 1.8;
+}
+
+.armenia-presence-card__details {
+    margin: 1.6rem 0 2rem;
+    padding: 0;
+}
+
+.armenia-presence-card__details div {
+    padding: 1rem 0;
+    border-top: 1px solid rgba(255, 223, 142, 0.14);
+}
+
+.armenia-presence-card__details div:last-child {
+    border-bottom: 1px solid rgba(255, 223, 142, 0.14);
+}
+
+.armenia-presence-card__details dt {
+    margin: 0 0 0.35rem;
+    color: #a88a4a;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.armenia-presence-card__details dd {
+    margin: 0;
+    color: #f4e8c6;
+    font-size: 1.08rem;
+    line-height: 1.5;
+}
+
+.armenia-presence-card__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.95rem 1.25rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 223, 142, 0.34);
+    color: #120d09;
+    background: #d4b761;
+    font-size: 0.84rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+}
+
+.armenia-presence-card__button:hover {
+    transform: translateY(-2px);
+    background: #f0cd78;
+}
+
+.armenia-presence-card__button--ghost {
+    color: #f4e8c6;
+    background: transparent;
+    margin-top: 8rem;
+}
+
+.armenia-presence-card__button--ghost:hover {
+    color: #120d09;
+    background: #f0cd78;
+}
+
+@media (max-width: 860px) {
+    .armenia-presence__grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .armenia-presence {
+        padding: 4rem 1rem;
+    }
+
+    .armenia-presence__header {
+        margin-bottom: 2.5rem;
+    }
+
+    .armenia-presence-card__button {
+        width: 100%;
+    }
+}
+

@@ -1,0 +1,171 @@
+.editorial {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(4.5rem, 8vw, 8rem) 2rem;
+    background:
+        radial-gradient(circle at 18% 18%, rgba(184, 132, 52, 0.18), transparent 34rem),
+        linear-gradient(180deg, #050507 0%, #090806 42%, #050507 100%);
+}
+
+.editorial::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(90deg, rgba(255, 223, 142, 0.08) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255, 223, 142, 0.05) 1px, transparent 1px);
+    background-size: 4rem 4rem;
+    opacity: 0.18;
+    pointer-events: none;
+}
+
+.editorial__inner {
+    position: relative;
+    z-index: 2;
+    max-width: 74rem;
+    margin: 0 auto;
+}
+
+.editorial__label {
+    margin: 0 0 1.75rem;
+    color: #b9944f;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+}
+
+.editorial__grid {
+    display: grid;
+    grid-template-columns: minmax(17rem, 0.85fr) minmax(0, 1.15fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+}
+
+.editorial__portrait {
+    min-height: 28rem;
+    display: flex;
+    align-items: stretch;
+}
+
+.editorial__portrait-frame {
+    position: relative;
+    width: 100%;
+    min-height: 28rem;
+    border: 1px solid rgba(255, 223, 142, 0.22);
+    background:
+        linear-gradient(145deg, rgba(255, 223, 142, 0.10), rgba(255, 223, 142, 0.02)),
+        #0b0907;
+    box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.42);
+    overflow: hidden;
+}
+
+.editorial__portrait-frame::after {
+    content: "Алексей Венедиктов";
+    position: absolute;
+    left: 1.25rem;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    padding: 0.9rem 1rem;
+    color: #f6e5b7;
+    background: rgba(5, 5, 7, 0.72);
+    border: 1px solid rgba(255, 223, 142, 0.16);
+    font-size: 0.9rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.editorial__portrait-frame img {
+    width: 100%;
+    height: 100%;
+    min-height: 28rem;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+    filter: sepia(0.18) contrast(1.06);
+}
+
+.editorial__eyebrow {
+    margin: 0 0 1.1rem;
+    color: #d4b761;
+    font-size: clamp(1rem, 1.4vw, 1.25rem);
+    line-height: 1.6;
+}
+
+.editorial__content h2 {
+    margin: 0 0 1.35rem;
+    max-width: 46rem;
+    color: #f7e8bd;
+    font-size: clamp(2.35rem, 5vw, 5rem);
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+}
+
+.editorial__lead {
+    color: #ead8a8;
+    font-size: clamp(1.18rem, 1.8vw, 1.55rem);
+    line-height: 1.65;
+}
+
+.editorial__content p {
+    max-width: 43rem;
+    margin: 0 0 1.2rem;
+    color: #cbb98c;
+    font-size: clamp(1rem, 1.1vw, 1.12rem);
+    line-height: 1.85;
+}
+
+.editorial__quote {
+    margin-top: 2rem;
+    max-width: 42rem;
+    padding: 1.4rem 1.6rem;
+    border-left: 2px solid #d4b761;
+    background: rgba(255, 223, 142, 0.06);
+}
+
+.editorial__quote span {
+    display: block;
+    margin: 0 0 0.55rem;
+    color: #a88a4a;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.editorial__quote strong {
+    display: block;
+    color: #f4e8c6;
+    font-size: clamp(1.25rem, 2vw, 1.75rem);
+    line-height: 1.35;
+    font-weight: 400;
+}
+
+@media (max-width: 860px) {
+    .editorial__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .editorial__portrait,
+    .editorial__portrait-frame,
+    .editorial__portrait-frame img {
+        min-height: 22rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .editorial {
+        padding: 4rem 1rem;
+    }
+
+    .editorial__portrait,
+    .editorial__portrait-frame,
+    .editorial__portrait-frame img {
+        min-height: 18rem;
+    }
+
+    .editorial__quote {
+        padding: 1.15rem 1.2rem;
+    }
+}
+

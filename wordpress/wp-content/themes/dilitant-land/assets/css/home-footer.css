@@ -1,0 +1,104 @@
+/* Подвал */
+
+.site-footer {
+    position: relative;
+    padding: 2rem;
+    background: #030304;
+    color: #f4e8c6;
+    border-top: 1px solid rgba(255, 223, 142, 0.14);
+}
+
+.site-footer__inner {
+    max-width: 78rem;
+    margin: 0 auto;
+}
+
+.site-footer__legal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.85rem 1.35rem;
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(255, 223, 142, 0.12);
+}
+
+.site-footer__legal a {
+    color: #d4b761;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.site-footer__legal a:hover {
+    color: #f0cd78;
+}
+
+.site-footer__bottom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.9rem 1.5rem;
+    color: #a99870;
+    font-size: 0.92rem;
+    text-align: center;
+}
+.site-footer__social {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.site-footer__social a {
+    color: #cdbb8f;
+    text-decoration: none;
+}
+
+.site-footer__social a:hover,
+.site-footer__social a:focus-visible {
+    color: #f0cd78;
+}
+
+.site-footer__developer {
+    color: #cdbb8f;
+}
+
+.site-footer__developer:hover {
+    color: #f0cd78;
+}
+
+.site-footer__copyright {
+    margin: 0;
+}
+
+.site-footer__payments {
+    display: block;
+    width: auto;
+    max-width: min(17rem, 100%);
+    max-height: 2.2rem;
+    object-fit: contain;
+}
+
+@media (max-width: 640px) {
+    .site-footer {
+        padding: 2rem 1rem;
+    }
+
+    .site-footer__legal,
+    .site-footer__bottom {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .site-footer__legal {
+        gap: 0.9rem;
+    }
+
+    .site-footer__payments {
+        max-height: 2rem;
+    }
+}
+

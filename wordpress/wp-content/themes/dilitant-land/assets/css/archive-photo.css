@@ -1,0 +1,300 @@
+/*
+ * Публичная карточка архивной фотографии.
+ * Раздел «Дилетанты в Армении».
+ */
+
+
+/* ===== Страница ===== */
+
+.archive-photo-page-body {
+    margin: 0;
+    background: #080808;
+    color: #f4e8c6;
+}
+
+.archive-photo-page {
+    min-height: 100vh;
+    padding: 48px 24px 72px;
+}
+
+.archive-photo-page__inner {
+    width: min(1100px, 100%);
+    margin: 0 auto;
+}
+
+
+/* ===== Возврат в фотоархив ===== */
+
+.archive-photo-page__back {
+    display: inline-block;
+    margin-bottom: 38px;
+    color: rgba(244, 232, 198, 0.72);
+    font-size: 15px;
+    line-height: 1.4;
+    text-decoration: none;
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.archive-photo-page__back:hover,
+.archive-photo-page__back:focus-visible {
+    color: #f4e8c6;
+    transform: translateX(-4px);
+}
+
+.archive-photo-page__back--bottom {
+    margin-top: 48px;
+    margin-bottom: 0;
+}
+
+
+/* ===== Заголовок ===== */
+
+.archive-photo__header {
+    max-width: 850px;
+    margin-bottom: 36px;
+}
+
+.archive-photo__label {
+    margin: 0 0 12px;
+    color: rgba(244, 232, 198, 0.58);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.archive-photo__title {
+    margin: 0;
+    color: #f4e8c6;
+    font-size: clamp(34px, 5vw, 64px);
+    font-weight: 600;
+    line-height: 1.05;
+}
+
+
+/* ===== Фотография ===== */
+
+.archive-photo__figure {
+    margin: 0 0 42px;
+}
+
+.archive-photo__image {
+    display: block;
+    width: 100%;
+    max-width: 1100px;
+    height: auto;
+    max-height: 78vh;
+    margin: 0 auto;
+    object-fit: contain;
+    background: #111;
+    border: 1px solid rgba(244, 232, 198, 0.12);
+}
+
+.archive-photo__caption {
+    margin-top: 12px;
+    color: rgba(244, 232, 198, 0.58);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+/* ===== Описание ===== */
+
+.archive-photo__description {
+    max-width: 820px;
+    margin: 0 0 48px;
+    color: rgba(244, 232, 198, 0.9);
+    font-size: 18px;
+    line-height: 1.75;
+}
+
+.archive-photo__description > :first-child {
+    margin-top: 0;
+}
+
+.archive-photo__description > :last-child {
+    margin-bottom: 0;
+}
+
+
+/* ===== Сведения о фотографии ===== */
+
+.archive-photo__details {
+    max-width: 900px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(244, 232, 198, 0.2);
+}
+
+.archive-photo__details h2 {
+    margin: 0 0 24px;
+    color: #f4e8c6;
+    font-size: clamp(24px, 3vw, 34px);
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.archive-photo__metadata {
+    margin: 0;
+}
+
+.archive-photo__metadata-row {
+    display: grid;
+    grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+    gap: 24px;
+    padding: 17px 0;
+    border-bottom: 1px solid rgba(244, 232, 198, 0.12);
+}
+
+.archive-photo__metadata-row:first-child {
+    border-top: 1px solid rgba(244, 232, 198, 0.12);
+}
+
+.archive-photo__metadata dt {
+    margin: 0;
+    color: rgba(244, 232, 198, 0.55);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.55;
+}
+
+.archive-photo__metadata dd {
+    margin: 0;
+    color: #f4e8c6;
+    font-size: 16px;
+    line-height: 1.55;
+}
+
+
+/* ===== Связанная статья ===== */
+
+.archive-photo__related {
+    max-width: 900px;
+    margin-top: 48px;
+    padding: 26px 28px;
+    border: 1px solid rgba(244, 232, 198, 0.18);
+    background: rgba(244, 232, 198, 0.035);
+}
+
+.archive-photo__related-label {
+    margin: 0 0 10px;
+    color: rgba(244, 232, 198, 0.55);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.archive-photo__related-link {
+    color: #f4e8c6;
+    font-size: clamp(20px, 2.5vw, 28px);
+    line-height: 1.3;
+    text-decoration: none;
+}
+
+.archive-photo__related-link:hover,
+.archive-photo__related-link:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+}
+
+
+/* ===== Ссылки внутри описания ===== */
+
+.archive-photo__description a,
+.archive-photo__metadata a {
+    color: #f4e8c6;
+    text-decoration: underline;
+    text-decoration-color: rgba(244, 232, 198, 0.45);
+    text-underline-offset: 3px;
+}
+
+.archive-photo__description a:hover,
+.archive-photo__description a:focus-visible,
+.archive-photo__metadata a:hover,
+.archive-photo__metadata a:focus-visible {
+    text-decoration-color: #f4e8c6;
+}
+
+
+/* ===== Мобильная версия ===== */
+
+@media (max-width: 700px) {
+
+    .archive-photo-page {
+        padding:
+            max(28px, env(safe-area-inset-top))
+            18px
+            52px;
+    }
+
+    .archive-photo-page__back {
+        margin-bottom: 28px;
+    }
+
+    .archive-photo__header {
+        margin-bottom: 28px;
+    }
+
+    .archive-photo__figure {
+        margin-left: -18px;
+        margin-right: -18px;
+        margin-bottom: 32px;
+    }
+
+    .archive-photo__image {
+        border-left: 0;
+        border-right: 0;
+    }
+
+    .archive-photo__caption {
+        padding: 0 18px;
+    }
+
+    .archive-photo__description {
+        margin-bottom: 38px;
+        font-size: 17px;
+        line-height: 1.65;
+    }
+
+    .archive-photo__details {
+        padding-top: 26px;
+    }
+
+    .archive-photo__metadata-row {
+        display: block;
+        padding: 15px 0;
+    }
+
+    .archive-photo__metadata dt {
+        margin-bottom: 5px;
+        font-size: 13px;
+    }
+
+    .archive-photo__metadata dd {
+        font-size: 16px;
+    }
+
+    .archive-photo__related {
+        margin-top: 38px;
+        padding: 22px 20px;
+    }
+
+    .archive-photo-page__back--bottom {
+        margin-top: 38px;
+    }
+}
+/* ===== Поправка для панели администратора WordPress ===== */
+
+.admin-bar .archive-photo-page {
+    padding-top: 72px;
+}
+
+@media (max-width: 782px) {
+    .admin-bar .archive-photo-page {
+        padding-top: 76px;
+    }
+}

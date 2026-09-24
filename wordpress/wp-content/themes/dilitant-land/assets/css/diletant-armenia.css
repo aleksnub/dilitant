@@ -1,0 +1,335 @@
+/**
+ * Страница «Дилетанты в Армении».
+ *
+ * Файл задаёт функциональную раскладку:
+ * - ограничение ширины страницы;
+ * - горизонтальные карусели;
+ * - размеры карточек;
+ * - аккордеоны отправки материалов;
+ * - базовую адаптацию для узких экранов.
+ */
+
+
+/* =========================================================
+ * Общая структура страницы
+ * ======================================================= */
+
+.diletant-armenia {
+    width: 100%;
+}
+
+.diletant-armenia__inner {
+    width: min(1200px, calc(100% - 40px));
+    margin: 0 auto;
+}
+
+.diletant-armenia__hero {
+    padding: 32px 0;
+}
+
+.diletant-armenia__section {
+    padding: 32px 0;
+}
+
+.diletant-armenia__section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 20px;
+}
+
+.diletant-armenia__section-header h2 {
+    margin: 0;
+}
+
+
+/* =========================================================
+ * Карусели
+ * ======================================================= */
+
+.diletant-armenia__carousel {
+    width: 100%;
+    min-width: 0;
+}
+
+.diletant-armenia__carousel-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.diletant-armenia__carousel-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 1;
+}
+
+.diletant-armenia__carousel-track {
+    display: flex;
+    gap: 24px;
+
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+
+    padding-bottom: 12px;
+}
+
+.diletant-armenia__carousel-item {
+    flex: 0 0 340px;
+    min-width: 0;
+
+    scroll-snap-align: start;
+}
+
+
+/* =========================================================
+ * Карточки статей
+ * ======================================================= */
+
+.diletant-armenia__article-card {
+    overflow: hidden;
+}
+
+.diletant-armenia__article-image {
+    display: block;
+    width: 100%;
+}
+
+.diletant-armenia__article-image img {
+    display: block;
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+.diletant-armenia__article-content {
+    padding-top: 12px;
+}
+
+.diletant-armenia__article-content h3 {
+    margin-top: 0;
+}
+
+.diletant-armenia__article-date {
+    margin: 8px 0;
+}
+
+
+/* =========================================================
+ * Карточки фотоархива
+ * ======================================================= */
+
+.diletant-armenia__photo-card {
+    overflow: hidden;
+}
+
+.diletant-armenia__photo-card > a {
+    display: block;
+}
+
+.diletant-armenia__photo-image {
+    width: 100%;
+    overflow: hidden;
+}
+
+.diletant-armenia__photo-image img {
+    display: block;
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+}
+
+.diletant-armenia__photo-card h3 {
+    margin: 12px 0 0;
+}
+
+
+/* =========================================================
+ * Отправка материалов
+ * ======================================================= */
+
+.diletant-armenia__submissions-header {
+    margin-bottom: 24px;
+}
+
+.diletant-armenia__submission-accordions {
+    display: grid;
+    gap: 12px;
+}
+
+.diletant-armenia__submission-accordion {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid #d8d8d8;
+}
+
+.diletant-armenia__submission-summary {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    min-height: 52px;
+    padding: 0 52px 0 18px;
+
+    cursor: pointer;
+    font-weight: 600;
+
+    list-style: none;
+}
+
+.diletant-armenia__submission-summary::-webkit-details-marker {
+    display: none;
+}
+
+.diletant-armenia__submission-summary::after {
+    content: "+";
+
+    position: absolute;
+    right: 18px;
+    top: 50%;
+
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1;
+
+    transform: translateY(-50%);
+}
+
+.diletant-armenia__submission-accordion[open]
+    > .diletant-armenia__submission-summary::after {
+    content: "−";
+}
+
+.diletant-armenia__submission-content {
+    min-width: 0;
+    padding: 8px 18px 24px;
+}
+
+
+/* =========================================================
+ * Защита элементов форм от выхода за аккордеон
+ * ======================================================= */
+
+.diletant-armenia__submission-content input[type="text"],
+.diletant-armenia__submission-content input[type="email"],
+.diletant-armenia__submission-content input[type="file"],
+.diletant-armenia__submission-content textarea,
+.diletant-armenia__submission-content select {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.diletant-armenia__submission-content textarea {
+    width: 100%;
+}
+
+/* =========================================================
+ * Каналы проекта
+ * ======================================================= */
+
+.diletant-armenia__social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    margin-top: 24px;
+}
+
+.diletant-armenia__social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 40px;
+    padding: 8px 18px;
+
+    border: 1px solid currentColor;
+
+    color: inherit;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+}
+
+.diletant-armenia__social-link:hover,
+.diletant-armenia__social-link:focus-visible {
+    text-decoration: underline;
+}
+
+/* =========================================================
+ * Узкие экраны
+ * ======================================================= */
+
+@media (max-width: 800px) {
+
+    .diletant-armenia__inner {
+        width: min(100% - 24px, 1200px);
+    }
+
+    .diletant-armenia__section-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .diletant-armenia__carousel-item {
+        flex-basis: min(82vw, 340px);
+    }
+
+}
+
+
+/* =========================================================
+ * Очень узкие экраны
+ * ======================================================= */
+
+@media (max-width: 480px) {
+
+    .diletant-armenia__hero,
+    .diletant-armenia__section {
+        padding: 24px 0;
+    }
+
+    .diletant-armenia__carousel-track {
+        gap: 16px;
+    }
+
+    .diletant-armenia__carousel-item {
+        flex-basis: 88vw;
+    }
+
+    .diletant-armenia__article-image img {
+        height: 190px;
+    }
+
+    .diletant-armenia__photo-image img {
+        height: 220px;
+    }
+
+    .diletant-armenia__submission-summary {
+        min-height: 48px;
+        padding-left: 14px;
+        padding-right: 46px;
+    }
+
+    .diletant-armenia__submission-summary::after {
+        right: 14px;
+    }
+
+    .diletant-armenia__submission-content {
+        padding: 8px 14px 20px;
+    }
+
+}

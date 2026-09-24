@@ -1,0 +1,119 @@
+# ==========================================================
+# Секреты и локальные настройки
+# ==========================================================
+
+.env
+.env.*
+!.env.example
+
+wordpress/wp-config.php
+wordpress/wp-config-*.php
+
+
+# ==========================================================
+# Приватные материалы
+# ==========================================================
+
+private/
+
+
+# ==========================================================
+# Ядро WordPress
+# ==========================================================
+
+wordpress/wp-admin/
+wordpress/wp-includes/
+
+wordpress/*.php
+wordpress/*.txt
+wordpress/*.html
+wordpress/.htaccess
+
+
+# ==========================================================
+# Служебные каталоги WordPress
+# ==========================================================
+
+wordpress/wp-content/languages/
+wordpress/wp-content/upgrade/
+wordpress/wp-content/uploads/
+
+
+# ==========================================================
+# Сторонние плагины
+# ==========================================================
+
+wordpress/wp-content/plugins/*
+
+# Наш плагин оставляем в Git
+!wordpress/wp-content/plugins/relokant-analytics/
+!wordpress/wp-content/plugins/relokant-analytics/**
+
+
+# ==========================================================
+# Темы
+# ==========================================================
+
+wordpress/wp-content/themes/*
+
+# Нашу тему оставляем в Git
+!wordpress/wp-content/themes/dilitant-land/
+!wordpress/wp-content/themes/dilitant-land/**
+
+
+# ==========================================================
+# Случайные и тестовые файлы в корне проекта
+# ==========================================================
+
+$description
+$title
+'archive_photo'
+'draft'
+get_error_code().PHP_EOL
+query(
+page-check.html
+cyrillic-test.jpg
+test-manuscript.docx
+
+
+# ==========================================================
+# Случайные файлы внутри wp-content
+# ==========================================================
+
+wordpress/wp-content/postmeta}
+
+
+# ==========================================================
+# ОС и редакторы
+# ==========================================================
+
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+
+# ==========================================================
+# Временные файлы и логи
+# ==========================================================
+
+*.log
+*.tmp
+*.temp
+*.swp
+*.bak
+# Документы, не являющиеся исходным кодом темы
+wordpress/wp-content/themes/dilitant-land/*.docx
+wordpress/wp-content/themes/dilitant-land/*.pdf
+# Локальные резервные версии исходников
+wordpress/wp-content/themes/dilitant-land/*.before-*
+wordpress/wp-content/themes/dilitant-land/*.with-*
+wordpress/wp-content/themes/dilitant-land/front-page.15.php
+wordpress/wp-content/themes/dilitant-land/functions.php.before-*
+wordpress/wp-content/themes/dilitant-land/inc/*.before-*
+wordpress/wp-content/themes/dilitant-land/style.14.css
+wordpress/wp-content/themes/dilitant-land/style.19.css
+# Старые дубли изображений
+wordpress/wp-content/themes/dilitant-land/assets/images/Архив/
+wordpress/wp-content/themes/dilitant-land/assets/images/╨Р╤А╤Е╨╕╨▓/
+wordpress/wp-content/index.php
