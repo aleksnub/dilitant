@@ -295,7 +295,7 @@ function dilitant_land_photo_submission_handle_cleanup() {
 
     $safe =
         dilitant_land_photo_submission_cleanup_directory(
-            '/var/www/dilitant-private/photo-safe',
+            dilitant_land_private_storage_path( 'photo-safe' ),
             $used_safe
         );
 
@@ -332,7 +332,7 @@ function dilitant_land_photo_submission_render_cleanup_page() {
         dilitant_land_photo_submission_quarantine_dir();
 
     $safe_dir =
-        '/var/www/dilitant-private/photo-safe';
+        dilitant_land_private_storage_path( 'photo-safe' );
 
     $used_quarantine =
         dilitant_land_photo_submission_get_used_filenames(

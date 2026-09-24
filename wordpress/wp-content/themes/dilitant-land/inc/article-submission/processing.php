@@ -20,7 +20,7 @@
  * @return string
  */
 function dilitant_land_article_submission_storage_dir() {
-    return '/var/www/dilitant-private/article-submissions';
+    return dilitant_land_private_storage_path( 'article-submissions' );
 }
 
 

@@ -81,7 +81,7 @@ function dilitant_land_photo_submission_process_upload(
         );
     }
 
-    $safe_dir = '/var/www/dilitant-private/photo-safe';
+    $safe_dir = dilitant_land_private_storage_path( 'photo-safe' );
 
     if (
         ! is_dir( $safe_dir )

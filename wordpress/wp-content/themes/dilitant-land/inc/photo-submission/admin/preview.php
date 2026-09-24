@@ -22,7 +22,7 @@
  * @return string
  */
 function dilitant_land_photo_submission_safe_dir() {
-    return '/var/www/dilitant-private/photo-safe';
+    return dilitant_land_private_storage_path( 'photo-safe' );
 }
 
 

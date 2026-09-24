@@ -139,7 +139,7 @@ function dilitant_land_photo_submission_get_publication_source(
      * document root WordPress.
      */
     $safe_dir =
-        '/var/www/dilitant-private/photo-safe';
+        dilitant_land_private_storage_path( 'photo-safe' );
 
     $safe_path =
         $safe_dir

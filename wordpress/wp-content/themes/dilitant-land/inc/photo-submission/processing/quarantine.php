@@ -15,7 +15,7 @@
  * @return string
  */
 function dilitant_land_photo_submission_quarantine_dir() {
-    return '/var/www/dilitant-private/photo-quarantine';
+    return dilitant_land_private_storage_path( 'photo-quarantine' );
 }
 
 
