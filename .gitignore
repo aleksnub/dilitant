@@ -6,8 +6,8 @@
 .env.*
 !.env.example
 
-wordpress/wp-config.php
-wordpress/wp-config-*.php
+src/wordpress/wp-config.php
+src/wordpress/wp-config-*.php
 
 
 # ==========================================================
@@ -21,44 +21,44 @@ private/
 # Ядро WordPress
 # ==========================================================
 
-wordpress/wp-admin/
-wordpress/wp-includes/
+src/wordpress/wp-admin/
+src/wordpress/wp-includes/
 
-wordpress/*.php
-wordpress/*.txt
-wordpress/*.html
-wordpress/.htaccess
+src/wordpress/*.php
+src/wordpress/*.txt
+src/wordpress/*.html
+src/wordpress/.htaccess
 
 
 # ==========================================================
 # Служебные каталоги WordPress
 # ==========================================================
 
-wordpress/wp-content/languages/
-wordpress/wp-content/upgrade/
-wordpress/wp-content/uploads/
+src/wordpress/wp-content/languages/
+src/wordpress/wp-content/upgrade/
+src/wordpress/wp-content/uploads/
 
 
 # ==========================================================
 # Сторонние плагины
 # ==========================================================
 
-wordpress/wp-content/plugins/*
+src/wordpress/wp-content/plugins/*
 
 # Наш плагин оставляем в Git
-!wordpress/wp-content/plugins/relokant-analytics/
-!wordpress/wp-content/plugins/relokant-analytics/**
+!src/wordpress/wp-content/plugins/relokant-analytics/
+!src/wordpress/wp-content/plugins/relokant-analytics/**
 
 
 # ==========================================================
 # Темы
 # ==========================================================
 
-wordpress/wp-content/themes/*
+src/wordpress/wp-content/themes/*
 
 # Нашу тему оставляем в Git
-!wordpress/wp-content/themes/dilitant-land/
-!wordpress/wp-content/themes/dilitant-land/**
+!src/wordpress/wp-content/themes/dilitant-land/
+!src/wordpress/wp-content/themes/dilitant-land/**
 
 
 # ==========================================================
@@ -80,7 +80,7 @@ test-manuscript.docx
 # Случайные файлы внутри wp-content
 # ==========================================================
 
-wordpress/wp-content/postmeta}
+src/wordpress/wp-content/postmeta}
 
 
 # ==========================================================
@@ -103,17 +103,17 @@ Thumbs.db
 *.swp
 *.bak
 # Документы, не являющиеся исходным кодом темы
-wordpress/wp-content/themes/dilitant-land/*.docx
-wordpress/wp-content/themes/dilitant-land/*.pdf
+src/wordpress/wp-content/themes/dilitant-land/*.docx
+src/wordpress/wp-content/themes/dilitant-land/*.pdf
 # Локальные резервные версии исходников
-wordpress/wp-content/themes/dilitant-land/*.before-*
-wordpress/wp-content/themes/dilitant-land/*.with-*
-wordpress/wp-content/themes/dilitant-land/front-page.15.php
-wordpress/wp-content/themes/dilitant-land/functions.php.before-*
-wordpress/wp-content/themes/dilitant-land/inc/*.before-*
-wordpress/wp-content/themes/dilitant-land/style.14.css
-wordpress/wp-content/themes/dilitant-land/style.19.css
+src/wordpress/wp-content/themes/dilitant-land/*.before-*
+src/wordpress/wp-content/themes/dilitant-land/*.with-*
+src/wordpress/wp-content/themes/dilitant-land/front-page.15.php
+src/wordpress/wp-content/themes/dilitant-land/functions.php.before-*
+src/wordpress/wp-content/themes/dilitant-land/inc/*.before-*
+src/wordpress/wp-content/themes/dilitant-land/style.14.css
+src/wordpress/wp-content/themes/dilitant-land/style.19.css
 # Старые дубли изображений
-wordpress/wp-content/themes/dilitant-land/assets/images/Архив/
-wordpress/wp-content/themes/dilitant-land/assets/images/╨Р╤А╤Е╨╕╨▓/
-wordpress/wp-content/index.php
+src/wordpress/wp-content/themes/dilitant-land/assets/images/Архив/
+src/wordpress/wp-content/themes/dilitant-land/assets/images/╨Р╤А╤Е╨╕╨▓/
+src/wordpress/wp-content/index.php

@@ -17,7 +17,7 @@ services:
       WORDPRESS_TABLE_PREFIX: wp_
 
     volumes:
-      - ./wordpress:/var/www/html
+      - ./src/wordpress:/var/www/html
       - ./private:/var/www/dilitant-private
       - ./php/uploads.ini:/usr/local/etc/php/conf.d/dilitant-uploads.ini:ro
 
