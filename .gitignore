@@ -117,3 +117,6 @@ src/wordpress/wp-content/themes/dilitant-land/style.19.css
 src/wordpress/wp-content/themes/dilitant-land/assets/images/Архив/
 src/wordpress/wp-content/themes/dilitant-land/assets/images/╨Р╤А╤Е╨╕╨▓/
 src/wordpress/wp-content/index.php
+# Python bytecode
+__pycache__/
+*.py[cod]
