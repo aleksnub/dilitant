@@ -1,18 +1,4 @@
 <?php
-/**
- * Проверка фактического состояния
- * тестовых записей Article Model.
- *
- * Ответственность:
- *     - проверка существования записи;
- *     - проверка типа;
- *     - проверка статуса;
- *     - проверка парольной защиты;
- *     - проверка автора;
- *     - проверка фактических категорий;
- *     - проверка даты будущей публикации;
- *     - проверка расширенного тестового набора.
- */
 
 declare(strict_types=1);
 
@@ -25,35 +11,21 @@ if (
     exit(1);
 }
 
-
 trait DilitantArticleFixtureVerification
 {
-    /**
-     * Проверяет фактические свойства записи.
-     */
     private function verify_post(
         int $id,
         int $category_id,
         string $status,
         string $post_type,
-        string $password = ''
+        string $password = '',
+        string $author_slot = 'administrator'
     ): void {
-        /*
-         * Проверяем принадлежность объекта.
-         */
         dilitant_test_assert(
-            in_array(
-                $id,
-                $this->post_ids,
-                true
-            ),
+            in_array($id, $this->post_ids, true),
             'Verified post does not belong to fixtures.'
         );
 
-
-        /*
-         * Получаем фактическую запись.
-         */
         $post = get_post($id);
 
         dilitant_test_assert(
@@ -61,75 +33,39 @@ trait DilitantArticleFixtureVerification
             "Created post {$id} cannot be resolved."
         );
 
+        $this->verify_post_ownership($post);
 
-        /*
-         * Проверяем тип.
-         */
         dilitant_test_assert_same(
             $post_type,
             $post->post_type,
             "Unexpected post type for fixture {$id}."
         );
 
-
-        /*
-         * Проверяем статус.
-         */
         dilitant_test_assert_same(
             $status,
             $post->post_status,
             "Unexpected post status for fixture {$id}."
         );
 
-
-        /*
-         * Проверяем парольную защиту.
-         */
         dilitant_test_assert_same(
             $password,
             $post->post_password,
             "Unexpected password state for fixture {$id}."
         );
 
-
-        /*
-         * Проверяем автора.
-         */
         dilitant_test_assert_same(
-            $this->author_id,
+            $this->resolve_post_author($author_slot),
             (int) $post->post_author,
             "Unexpected author for fixture {$id}."
         );
 
+        $this->verify_post_categories($id, $category_id);
 
-        /*
-         * Проверяем принадлежность категории.
-         */
-        $this->verify_post_categories(
-            $id,
-            $category_id
-        );
-
-
-        /*
-         * Дополнительные условия
-         * для будущей публикации.
-         */
         if ($status === 'future') {
-            $this->verify_future_post(
-                $post
-            );
+            $this->verify_future_post($post);
         }
     }
 
-
-    /**
-     * Проверяет фактические связи записи
-     * с терминами таксономии category.
-     *
-     * Применяется одинаково
-     * для post, page и CPT.
-     */
     private function verify_post_categories(
         int $post_id,
         int $category_id
@@ -137,60 +73,42 @@ trait DilitantArticleFixtureVerification
         $actual_categories = wp_get_object_terms(
             $post_id,
             'category',
-            [
-                'fields' => 'ids',
-            ]
+            ['fields' => 'ids']
         );
 
-        if (is_wp_error($actual_categories)) {
+        if (
+            is_wp_error($actual_categories)
+            || !is_array($actual_categories)
+        ) {
             throw new RuntimeException(
-                'Unable to verify fixture categories: '
-                . $actual_categories->get_error_message()
+                'Unable to verify fixture categories.'
             );
         }
 
         dilitant_test_assert_same(
             [$category_id],
-            dilitant_test_normalize_ids(
-                $actual_categories
-            ),
+            dilitant_test_normalize_ids($actual_categories),
             "Incorrect categories for fixture {$post_id}."
         );
     }
 
-
-    /**
-     * Проверяет дату и статус
-     * запланированной публикации.
-     */
-    private function verify_future_post(
-        WP_Post $post
-    ): void {
+    private function verify_future_post(WP_Post $post): void
+    {
         dilitant_test_assert_same(
             'future',
             $post->post_status,
             'Future fixture has incorrect status.'
         );
 
-
-        /*
-         * Проверяем UTC-время публикации.
-         */
         $timestamp = strtotime(
             $post->post_date_gmt . ' UTC'
         );
 
         dilitant_test_assert(
-            $timestamp !== false
-            && $timestamp > time(),
+            $timestamp !== false && $timestamp > time(),
             'Future fixture date is not in the future.'
         );
 
-
-        /*
-         * Проверяем согласованность
-         * локальной даты и UTC.
-         */
         dilitant_test_assert_same(
             get_date_from_gmt(
                 $post->post_date_gmt,
@@ -201,10 +119,6 @@ trait DilitantArticleFixtureVerification
         );
     }
 
-
-    /**
-     * Проверяет базовые тестовые данные.
-     */
     public function verify_base_fixtures(): void
     {
         $this->verify_environment();
@@ -213,7 +127,6 @@ trait DilitantArticleFixtureVerification
             $this->base_created,
             'Base fixtures are not available.'
         );
-
 
         $this->verify_post(
             $this->root_post,
@@ -247,35 +160,23 @@ trait DilitantArticleFixtureVerification
             $this->draft_post,
             $this->child_category,
             'draft',
-            'post'
+            'post',
+            '',
+            'author_a'
         );
     }
 
-
-    /**
-     * Проверяет полный расширенный набор
-     * тестовых данных AM-D02.
-     */
     public function verify_query_fixtures(): void
     {
         $this->verify_environment();
 
         dilitant_test_assert(
-            $this->base_created
-            && $this->query_created,
+            $this->base_created && $this->query_created,
             'Complete query fixtures are not available.'
         );
 
-
-        /*
-         * Повторно проверяем базовые данные.
-         */
         $this->verify_base_fixtures();
 
-
-        /*
-         * Страница.
-         */
         $this->verify_post(
             $this->page_post,
             $this->root_category,
@@ -283,21 +184,15 @@ trait DilitantArticleFixtureVerification
             'page'
         );
 
-
-        /*
-         * Приватная статья.
-         */
         $this->verify_post(
             $this->private_post,
             $this->root_category,
             'private',
-            'post'
+            'post',
+            '',
+            'author_b'
         );
 
-
-        /*
-         * Запланированная статья.
-         */
         $this->verify_post(
             $this->future_post,
             $this->root_category,
@@ -305,10 +200,6 @@ trait DilitantArticleFixtureVerification
             'post'
         );
 
-
-        /*
-         * Защищённая статья.
-         */
         $this->verify_post(
             $this->password_post,
             $this->root_category,
@@ -317,10 +208,6 @@ trait DilitantArticleFixtureVerification
             self::TEST_POST_PASSWORD
         );
 
-
-        /*
-         * Запись фотоархива.
-         */
         $this->verify_post(
             $this->archive_post,
             $this->root_category,
@@ -328,10 +215,6 @@ trait DilitantArticleFixtureVerification
             self::ARCHIVE_POST_TYPE
         );
 
-
-        /*
-         * Проверяем полный состав объектов.
-         */
         dilitant_test_assert_same(
             10,
             count($this->post_ids),
@@ -343,5 +226,51 @@ trait DilitantArticleFixtureVerification
             count($this->category_ids),
             'Unexpected number of fixture categories.'
         );
+
+        if ($this->user_ids !== []) {
+            $this->verify_users();
+            $this->verify_user_post_permissions();
+        }
+    }
+
+    private function verify_user_post_permissions(): void
+    {
+        $cases = [
+            ['administrator', $this->draft_post, true],
+            ['subscriber', $this->draft_post, false],
+            ['author_a', $this->draft_post, true],
+            ['author_b', $this->draft_post, false],
+
+            ['administrator', $this->private_post, true],
+            ['subscriber', $this->private_post, false],
+            ['author_a', $this->private_post, false],
+            ['author_b', $this->private_post, true],
+        ];
+
+        foreach ($cases as [$slot, $post_id, $expected]) {
+            $record = $this->owned_record(
+                'user',
+                $this->{$slot}
+            );
+
+            DilitantFixtureUserPermissions::verify_post_access(
+                $record,
+                $this->run_id,
+                $post_id,
+                $expected
+            );
+        }
+
+        foreach ([$this->draft_post, $this->private_post] as $id) {
+            $anonymous = new WP_User(0);
+
+            dilitant_test_assert_same(
+                false,
+                user_can($anonymous, 'edit_post', $id),
+                'Anonymous post permission accepted.'
+            );
+        }
+
+        DilitantFixtureUserResolution::guard();
     }
 }

@@ -1,18 +1,4 @@
 <?php
-/**
- * Базовый тестовый набор Article Model.
- *
- * Нормативная основа:
- *     EDC-01
- *     AM-D01
- *     AM-T01 — AM-T05
- *
- * Ответственность:
- *     - создание дерева категорий;
- *     - создание базовых публикаций;
- *     - управление состоянием инициализации;
- *     - сохранение совместимости испытаний AM-D01.
- */
 
 declare(strict_types=1);
 
@@ -25,24 +11,35 @@ if (
     exit(1);
 }
 
+require_once __DIR__ . '/lock.php';
 
 trait DilitantArticleFixtureBase
 {
-    /**
-     * Создаёт базовый набор тестовых данных.
-     *
-     * Дополнительные данные AM-D02
-     * создаются отдельным методом.
-     */
     public function create(): void
     {
         $this->verify_environment();
 
+        dilitant_fixture_acquire_lock();
 
-        /*
-         * Запрещаем повторное создание
-         * без предварительной очистки.
-         */
+        if ($this->journal === null) {
+            $manifest = get_option(
+                'dilitant_http_fixture_manifest_v1',
+                null
+            );
+
+            if (
+                $manifest !== null
+                && (
+                    !is_array($manifest)
+                    || ($manifest['state'] ?? null) !== 'CLEANED'
+                )
+            ) {
+                throw new RuntimeException(
+                    'An HTTP fixture run is active.'
+                );
+            }
+        }
+
         if (
             $this->base_created
             || $this->query_created
@@ -54,38 +51,28 @@ trait DilitantArticleFixtureBase
             );
         }
 
-
-        /*
-         * Не допускаем использование
-         * существующей корневой категории.
-         */
-        $existing = get_category_by_slug(
-            self::ROOT_SLUG
-        );
-
-        if ($existing instanceof WP_Term) {
+        if (
+            $this->user_ids !== []
+            && !$this->users_created
+        ) {
             throw new RuntimeException(
-                'Blog root already exists in test database. '
-                . 'A clean test environment is required.'
+                'Fixture user initialization is incomplete.'
             );
         }
 
+        if ($this->users_created) {
+            $this->verify_users();
+        }
 
-        /*
-         * Создаём категории.
-         */
+        if (get_category_by_slug(self::ROOT_SLUG) !== false) {
+            throw new RuntimeException(
+                'Blog root already exists. A clean environment is required.'
+            );
+        }
+
         $this->create_base_categories();
-
-
-        /*
-         * Создаём публикации.
-         */
         $this->create_base_posts();
 
-
-        /*
-         * Подтверждаем состав данных.
-         */
         dilitant_test_assert_same(
             4,
             count($this->category_ids),
@@ -98,121 +85,65 @@ trait DilitantArticleFixtureBase
             'Unexpected number of base posts.'
         );
 
-
-        /*
-         * Базовый набор сформирован.
-         */
         $this->base_created = true;
 
-
-        /*
-         * Проверяем итоговое состояние.
-         */
         $this->verify_base_fixtures();
     }
 
-
-    /**
-     * Создаёт дерево тестовых категорий.
-     */
     private function create_base_categories(): void
     {
-        /*
-         * Корневая категория блога.
-         */
-        $this->root_category =
-            $this->create_category(
-                'AM Root',
-                self::ROOT_SLUG
-            );
+        $this->root_category = $this->create_category(
+            'AM Root',
+            self::ROOT_SLUG
+        );
 
+        $this->child_category = $this->create_category(
+            'AM Child ' . $this->run_id,
+            'am-child-' . $this->run_id,
+            $this->root_category
+        );
 
-        /*
-         * Категория второго уровня.
-         */
-        $this->child_category =
-            $this->create_category(
-                'AM Child ' . $this->run_id,
-                'am-child-' . $this->run_id,
-                $this->root_category
-            );
+        $this->grandchild_category = $this->create_category(
+            'AM Grandchild ' . $this->run_id,
+            'am-grandchild-' . $this->run_id,
+            $this->child_category
+        );
 
-
-        /*
-         * Категория третьего уровня.
-         */
-        $this->grandchild_category =
-            $this->create_category(
-                'AM Grandchild ' . $this->run_id,
-                'am-grandchild-' . $this->run_id,
-                $this->child_category
-            );
-
-
-        /*
-         * Посторонняя категория.
-         */
-        $this->outside_category =
-            $this->create_category(
-                'AM Outside ' . $this->run_id,
-                'am-outside-' . $this->run_id
-            );
+        $this->outside_category = $this->create_category(
+            'AM Outside ' . $this->run_id,
+            'am-outside-' . $this->run_id
+        );
     }
 
-
-    /**
-     * Создаёт базовые тестовые публикации.
-     */
     private function create_base_posts(): void
     {
-        /*
-         * Статья корневой категории.
-         */
-        $this->root_post =
-            $this->create_post(
-                'AM Root Article',
-                $this->root_category
-            );
+        $this->root_post = $this->create_post(
+            'AM Root Article',
+            $this->root_category
+        );
 
+        $this->child_post = $this->create_post(
+            'AM Child Article',
+            $this->child_category
+        );
 
-        /*
-         * Статья дочерней категории.
-         */
-        $this->child_post =
-            $this->create_post(
-                'AM Child Article',
-                $this->child_category
-            );
+        $this->grandchild_post = $this->create_post(
+            'AM Grandchild Article',
+            $this->grandchild_category
+        );
 
+        $this->outside_post = $this->create_post(
+            'AM Outside Article',
+            $this->outside_category
+        );
 
-        /*
-         * Статья третьего уровня.
-         */
-        $this->grandchild_post =
-            $this->create_post(
-                'AM Grandchild Article',
-                $this->grandchild_category
-            );
-
-
-        /*
-         * Посторонняя публикация.
-         */
-        $this->outside_post =
-            $this->create_post(
-                'AM Outside Article',
-                $this->outside_category
-            );
-
-
-        /*
-         * Черновик статьи блога.
-         */
-        $this->draft_post =
-            $this->create_post(
-                'AM Draft Article',
-                $this->child_category,
-                'draft'
-            );
+        $this->draft_post = $this->create_post(
+            'AM Draft Article',
+            $this->child_category,
+            'draft',
+            'post',
+            '',
+            'author_a'
+        );
     }
 }

@@ -1,15 +1,4 @@
 <?php
-/**
- * Создание тестовых записей Article Model.
- *
- * Ответственность:
- *     - формирование параметров публикации;
- *     - создание post, page и CPT;
- *     - создание запланированных записей;
- *     - создание защищённых записей;
- *     - назначение тестовых категорий;
- *     - регистрация созданных объектов.
- */
 
 declare(strict_types=1);
 
@@ -22,105 +11,109 @@ if (
     exit(1);
 }
 
-
 trait DilitantArticleFixturePosts
 {
-    /**
-     * Создаёт тестовую запись.
-     *
-     * Категория назначается явно,
-     * независимо от типа записи.
-     */
+    private function resolve_post_author(string $slot): int
+    {
+        if (!in_array(
+            $slot,
+            ['administrator', 'author_a', 'author_b'],
+            true
+        )) {
+            throw new RuntimeException(
+                'Invalid fixture post author slot.'
+            );
+        }
+
+        if ($this->user_ids === []) {
+            if ($this->users_created || $this->author_id <= 0) {
+                throw new RuntimeException(
+                    'Fixture author unavailable.'
+                );
+            }
+
+            return $this->author_id;
+        }
+
+        if (!$this->users_created) {
+            throw new RuntimeException(
+                'Fixture users are incomplete.'
+            );
+        }
+
+        $id = $this->{$slot};
+        $record = $this->owned_record('user', $id);
+
+        if (
+            $record['identity']['slot'] !== $slot
+            || !in_array($id, $this->user_ids, true)
+        ) {
+            throw new RuntimeException(
+                'Fixture post author slot mismatch.'
+            );
+        }
+
+        DilitantFixtureUserPermissions::verify(
+            $record,
+            $this->run_id
+        );
+
+        return $id;
+    }
+
     private function create_post(
         string $title,
         int $category_id,
         string $status = 'publish',
         string $post_type = 'post',
-        string $password = ''
+        string $password = '',
+        string $author_slot = 'administrator'
     ): int {
         $this->verify_environment();
+        dilitant_fixture_assert_lock();
 
-
-        /*
-         * Проверяем наличие зарегистрированного
-         * типа записи.
-         */
         dilitant_test_assert(
             post_type_exists($post_type),
             "Unknown fixture post type: {$post_type}"
         );
 
-
-        /*
-         * Проверяем допустимость статуса.
-         */
         dilitant_test_assert(
             in_array(
                 $status,
-                [
-                    'publish',
-                    'draft',
-                    'private',
-                    'future',
-                ],
+                ['publish', 'draft', 'private', 'future'],
                 true
             ),
             "Unsupported fixture status: {$status}"
         );
 
-
-        /*
-         * Проверяем принадлежность категории.
-         */
         dilitant_test_assert(
-            in_array(
-                $category_id,
-                $this->category_ids,
-                true
-            ),
+            in_array($category_id, $this->category_ids, true),
             'Category does not belong to fixtures.'
         );
 
+        $author_id = $this->resolve_post_author($author_slot);
 
-        /*
-         * Формируем параметры записи.
-         */
+        $full_title = $title . ' ' . $this->run_id;
+
+        $marker = 'AM-CONTENT-' . $this->run_id . '-'
+            . bin2hex(random_bytes(8));
+
         $data = [
             'post_type' => $post_type,
-
-            'post_title' =>
-                $title . ' ' . $this->run_id,
-
+            'post_title' => $full_title,
             'post_content' =>
-                'Article Model integration test fixture.',
-
+                "Article Model integration test fixture. {$marker}",
             'post_status' => $status,
-
-            'post_author' => $this->author_id,
-
+            'post_author' => $author_id,
             'post_password' => $password,
-
             'comment_status' => 'closed',
-
             'ping_status' => 'closed',
         ];
 
-
-        /*
-         * Для обычных записей назначаем
-         * категорию штатным способом.
-         */
         if ($post_type === 'post') {
-            $data['post_category'] = [
-                $category_id,
-            ];
+            $data['post_category'] = [$category_id];
         }
 
-
-        /*
-         * Для будущих публикаций устанавливаем
-         * согласованные даты.
-         */
         if ($status === 'future') {
             $data = array_merge(
                 $data,
@@ -128,132 +121,87 @@ trait DilitantArticleFixturePosts
             );
         }
 
+        $identity = [
+            'title' => $full_title,
+            'type' => $post_type,
+            'author_id' => $author_id,
+            'content_marker' => $marker,
+        ];
 
-        /*
-         * Создаём запись.
-         */
-        $result = wp_insert_post(
-            $data,
-            true
+        $this->register_intent('post', $identity);
+
+        dilitant_fixture_assert_lock();
+
+        $result = wp_insert_post($data, true);
+
+        dilitant_fixture_assert_lock();
+
+        if (
+            is_wp_error($result)
+            || !is_int($result)
+            || $result <= 0
+        ) {
+            throw new RuntimeException('Post creation failed.');
+        }
+
+        $this->register_object(
+            'post',
+            $result,
+            $identity
         );
 
-        if (is_wp_error($result)) {
-            throw new RuntimeException(
-                'Post creation failed: '
-                . $result->get_error_message()
-            );
-        }
-
-        $id = (int) $result;
-
-        if ($id <= 0) {
-            throw new RuntimeException(
-                'Invalid post identifier.'
-            );
-        }
-
-
-        /*
-         * Регистрируем созданный объект
-         * до назначения категории.
-         */
-        $this->post_ids[] = $id;
-
-
-        /*
-         * Назначаем категорию.
-         */
         $this->assign_post_category(
-            $id,
+            $result,
             $category_id
         );
 
-
-        /*
-         * Проверяем фактическое состояние.
-         */
         $this->verify_post(
-            $id,
+            $result,
             $category_id,
             $status,
             $post_type,
-            $password
+            $password,
+            $author_slot
         );
 
-        return $id;
+        dilitant_fixture_assert_lock();
+
+        return $result;
     }
 
-
-    /**
-     * Формирует согласованные даты
-     * запланированной публикации.
-     *
-     * Дата публикации устанавливается
-     * на семь суток вперёд.
-     */
     private function build_future_post_dates(): array
     {
-        $future_gmt = gmdate(
+        $gmt = gmdate(
             'Y-m-d H:i:s',
-            time() + (7 * DAY_IN_SECONDS)
+            time() + 7 * DAY_IN_SECONDS
         );
 
         return [
-            'post_date_gmt' => $future_gmt,
-
+            'post_date_gmt' => $gmt,
             'post_date' => get_date_from_gmt(
-                $future_gmt,
+                $gmt,
                 'Y-m-d H:i:s'
             ),
         ];
     }
 
-
-    /**
-     * Назначает записи ровно одну
-     * тестовую категорию.
-     *
-     * Допускает назначение категории
-     * страницам и CPT для моделирования
-     * нарушений инварианта типа записи.
-     */
     private function assign_post_category(
         int $post_id,
         int $category_id
     ): void {
         $this->verify_environment();
+        dilitant_fixture_assert_lock();
 
-
-        /*
-         * Проверяем принадлежность записи.
-         */
         dilitant_test_assert(
-            in_array(
-                $post_id,
-                $this->post_ids,
-                true
-            ),
+            in_array($post_id, $this->post_ids, true),
             'Post does not belong to fixtures.'
         );
 
-
-        /*
-         * Проверяем принадлежность категории.
-         */
         dilitant_test_assert(
-            in_array(
-                $category_id,
-                $this->category_ids,
-                true
-            ),
+            in_array($category_id, $this->category_ids, true),
             'Category does not belong to fixtures.'
         );
 
-
-        /*
-         * Назначаем категорию непосредственно
-         * через API таксономий WordPress.
-         */
         $assigned = wp_set_object_terms(
             $post_id,
             [$category_id],
@@ -261,16 +209,16 @@ trait DilitantArticleFixturePosts
             false
         );
 
+        dilitant_fixture_assert_lock();
+
         if (is_wp_error($assigned)) {
             throw new RuntimeException(
-                'Category assignment failed: '
-                . $assigned->get_error_message()
+                'Category assignment failed.'
             );
         }
 
         dilitant_test_assert(
-            is_array($assigned)
-            && count($assigned) === 1,
+            is_array($assigned) && count($assigned) === 1,
             'Unexpected category assignment result.'
         );
     }
