@@ -80,7 +80,7 @@ test-manuscript.docx
 # Случайные файлы внутри wp-content
 # ==========================================================
 
-src/wordpress/wp-content/postmeta}
+src/wordpress/wp-content/postmeta[}]
 
 
 # ==========================================================

@@ -85,11 +85,8 @@
             </div>
 
             <?php
-            $articles = new WP_Query(
+            $articles = dilitant_land_get_blog_articles(
                 array(
-                    'post_type'      => 'post',
-                    'post_status'    => 'publish',
-                    'category_name'  => 'diletant-armenia',
                     'posts_per_page' => 6,
                     'orderby'        => 'date',
                     'order'          => 'DESC',
