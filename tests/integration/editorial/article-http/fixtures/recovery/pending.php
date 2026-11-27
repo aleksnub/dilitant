@@ -36,7 +36,9 @@ function dilitant_recover_pending_object(
         || ($object['taxonomy_id'] ?? null) !== 0
         || !is_array($object['identity'] ?? null)
     ) {
-        throw new RuntimeException('Invalid recovery intent.');
+        throw new RuntimeException(
+            'Invalid recovery intent.'
+        );
     }
 
     $identity = $object['identity'];
@@ -108,7 +110,11 @@ trait DilitantManifestPendingRecovery
                     }
                 }
 
-                array_splice($next['objects'], $index, 1);
+                array_splice(
+                    $next['objects'],
+                    $index,
+                    1
+                );
                 break;
 
             case DilitantRecoveryOutcome::RESOLVED:
@@ -126,8 +132,7 @@ trait DilitantManifestPendingRecovery
 
                 self::validate_object(
                     $object,
-                    $next['run_id'],
-                    $next['schema_version']
+                    $next['run_id']
                 );
 
                 $next['objects'][$index] = $object;

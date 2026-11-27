@@ -19,7 +19,9 @@ trait DilitantManifestLifecycle
         $this->require_state('CREATING');
 
         if ($this->pending_index() !== null) {
-            throw new RuntimeException('Unresolved creation intent.');
+            throw new RuntimeException(
+                'Unresolved creation intent.'
+            );
         }
 
         $next = $this->data;
@@ -33,8 +35,7 @@ trait DilitantManifestLifecycle
 
         self::validate_object(
             $object,
-            $next['run_id'],
-            $next['schema_version']
+            $next['run_id']
         );
 
         $result = dilitant_recover_pending_object(
@@ -62,7 +63,9 @@ trait DilitantManifestLifecycle
         $index = $this->pending_index();
 
         if ($index === null || $id <= 0) {
-            throw new RuntimeException('Invalid fixture confirmation.');
+            throw new RuntimeException(
+                'Invalid fixture confirmation.'
+            );
         }
 
         $next = $this->data;
@@ -88,8 +91,7 @@ trait DilitantManifestLifecycle
 
         self::validate_object(
             $object,
-            $next['run_id'],
-            $next['schema_version']
+            $next['run_id']
         );
 
         if ($object['kind'] === 'user') {
@@ -109,10 +111,13 @@ trait DilitantManifestLifecycle
         $this->require_state('CREATING');
 
         if ($this->pending_index() !== null) {
-            throw new RuntimeException('Unresolved fixture object.');
+            throw new RuntimeException(
+                'Unresolved fixture object.'
+            );
         }
 
         $next = $this->data;
+
         $next['snapshot'] = $snapshot;
         $next['state'] = 'READY';
 
@@ -174,7 +179,9 @@ trait DilitantManifestLifecycle
         $this->require_state('CLEANING');
 
         if ($this->pending_index() !== null) {
-            throw new RuntimeException('Unresolved fixture intent.');
+            throw new RuntimeException(
+                'Unresolved fixture intent.'
+            );
         }
 
         foreach ($this->data['objects'] as $object) {
@@ -231,6 +238,7 @@ trait DilitantManifestLifecycle
                         "Residual publication event: {$id}"
                     );
                 }
+
             } else {
                 $taxonomy_id = $object['taxonomy_id'];
 

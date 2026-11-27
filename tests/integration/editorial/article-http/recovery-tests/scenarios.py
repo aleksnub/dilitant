@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import copy
 
-from process import require
+from recovery_process import require
 from suite import RecoverySuiteBase
 
 

@@ -41,16 +41,14 @@ function record_http_fixture_failure(
     }
 }
 
-function create_http_fixtures(
-    int $schema_version = 1
-): array {
+function create_http_fixtures(): array
+{
     dilitant_fixture_assert_lock();
 
     $fixtures = new DilitantArticleFixtures();
 
     $manifest = DilitantHttpFixtureManifest::begin(
-        $fixtures->run_id(),
-        $schema_version
+        $fixtures->run_id()
     );
 
     try {
@@ -58,11 +56,9 @@ function create_http_fixtures(
 
         dilitant_fixture_assert_lock();
 
-        if ($schema_version === 2) {
-            $fixtures->create_users();
+        $fixtures->create_users();
 
-            dilitant_fixture_assert_lock();
-        }
+        dilitant_fixture_assert_lock();
 
         $fixtures->create();
 
@@ -156,9 +152,11 @@ function execute_http_fixture_command(
     dilitant_fixture_assert_lock();
 
     return match ($command) {
-        'create' => create_http_fixtures(1),
+        'create' => throw new RuntimeException(
+            'Manifest schema downgrade rejected.'
+        ),
 
-        'create-v2' => create_http_fixtures(2),
+        'create-v2' => create_http_fixtures(),
 
         'status' => DilitantHttpFixtureManifest::load()->data(),
 
@@ -236,7 +234,7 @@ if (!in_array(
 )) {
     fwrite(
         STDERR,
-        "Usage: fixtures.php create|create-v2|status|verify|cleanup\n"
+        "Usage: fixtures.php create-v2|status|verify|cleanup\n"
     );
 
     exit(2);

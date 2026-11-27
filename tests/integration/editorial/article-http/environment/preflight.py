@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import errno
+import math
 import os
 import shutil
 import socket
 import sys
+import time
 
 from .config import EnvironmentConfig
 
@@ -22,8 +25,6 @@ from .process import (
 
 
 class EnvironmentPreflight:
-    """Проверяет предусловия создания HTTP-стенда."""
-
     def __init__(
         self,
         config: EnvironmentConfig,
@@ -33,8 +34,6 @@ class EnvironmentPreflight:
         self.process = process
 
     def verify_dependencies(self) -> None:
-        """Проверяет Python и Docker."""
-
         if sys.version_info < (3, 10):
             raise DependencyError(
                 "Python 3.10 or newer is required."
@@ -54,8 +53,6 @@ class EnvironmentPreflight:
         )
 
     def verify_environment(self) -> None:
-        """Проверяет обязательные параметры тестовой БД."""
-
         for name, expected in (
             self.config.required_environment.items()
         ):
@@ -78,8 +75,6 @@ class EnvironmentPreflight:
         )
 
     def verify_source(self) -> None:
-        """Проверяет исходные файлы WordPress и стенда."""
-
         source = self.config.wordpress_source
 
         required_files = [
@@ -120,17 +115,6 @@ class EnvironmentPreflight:
                 "Test configuration must not be a symlink."
             )
 
-        # Ранее обнаруженный дефект:
-        # wp-config.php имел режим 0600
-        # и был недоступен www-data.
-        #
-        # Тестовая конфигурация не содержит
-        # сохранённых секретов. Требуем
-        # возможность чтения обычным пользователем.
-        #
-        # Фактический доступ дополнительно
-        # проверяется внутри контейнера.
-
         if not config_path.stat().st_mode & 0o004:
             raise ConfigurationError(
                 "Test wp-config.php is not readable "
@@ -146,8 +130,6 @@ class EnvironmentPreflight:
         self,
         container_name: str,
     ) -> None:
-        """Проверяет состояние необходимого контейнера."""
-
         running = self.process.output(
             [
                 "docker",
@@ -165,8 +147,6 @@ class EnvironmentPreflight:
             )
 
     def verify_docker_environment(self) -> None:
-        """Проверяет существующую Docker-инфраструктуру."""
-
         self.verify_container_running(
             self.config.source_container,
         )
@@ -188,40 +168,95 @@ class EnvironmentPreflight:
             "HTTP test Docker infrastructure"
         )
 
-    def verify_port(self) -> None:
-        """Проверяет возможность занятия локального порта."""
-
+    def _bind_port(self) -> None:
         with socket.socket(
             socket.AF_INET,
             socket.SOCK_STREAM,
         ) as server:
-            try:
-                server.bind(
-                    (
-                        self.config.host,
-                        self.config.port,
-                    )
+            server.bind(
+                (
+                    self.config.host,
+                    self.config.port,
                 )
+            )
 
-            except OSError as error:
-                raise VerificationError(
-                    "HTTP test port is unavailable: "
-                    f"{self.config.host}:{self.config.port}"
-                ) from error
+    def verify_port(
+        self,
+        *,
+        wait: bool = False,
+    ) -> None:
+        timeout = self.config.port_release_timeout
+        interval = self.config.port_poll_interval
 
-        report_pass(
-            "HTTP test port is available"
+        if (
+            not math.isfinite(timeout)
+            or not math.isfinite(interval)
+            or timeout <= 0
+            or interval <= 0
+        ):
+            raise ConfigurationError(
+                "Invalid port release timing configuration."
+            )
+
+        address = (
+            f"{self.config.host}:"
+            f"{self.config.port}"
         )
 
+        deadline = time.monotonic() + (
+            timeout if wait else 0.0
+        )
+
+        waiting_reported = False
+
+        while True:
+            try:
+                self._bind_port()
+
+            except OSError as error:
+                if error.errno != errno.EADDRINUSE:
+                    raise VerificationError(
+                        "HTTP test port verification failed: "
+                        f"{address}; "
+                        f"errno={error.errno}; "
+                        f"{error.strerror}"
+                    ) from error
+
+                remaining = (
+                    deadline - time.monotonic()
+                )
+
+                if not wait or remaining <= 0:
+                    raise VerificationError(
+                        "HTTP test port is unavailable: "
+                        f"{address}; "
+                        f"errno={error.errno}; "
+                        f"{error.strerror}"
+                    ) from error
+
+                if not waiting_reported:
+                    print(
+                        "Waiting for HTTP test port release: "
+                        f"{address}",
+                        flush=True,
+                    )
+
+                    waiting_reported = True
+
+                time.sleep(
+                    min(interval, remaining)
+                )
+
+            else:
+                report_pass(
+                    "HTTP test port is available"
+                )
+
+                return
+
     def run(self) -> None:
-        """Исполняет предварительные проверки."""
-
         self.verify_dependencies()
-
         self.verify_environment()
-
         self.verify_source()
-
         self.verify_docker_environment()
-
         self.verify_port()

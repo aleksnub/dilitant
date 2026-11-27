@@ -21,6 +21,8 @@ final class DilitantHttpFixtureManifest implements DilitantFixtureJournal
 
     public const OPTION = 'dilitant_http_fixture_manifest_v1';
 
+    public const SCHEMA_VERSION = 2;
+
     private array $data;
 
     private function __construct(array $data)
@@ -32,14 +34,17 @@ final class DilitantHttpFixtureManifest implements DilitantFixtureJournal
 
     public static function begin(
         string $run_id,
-        int $schema_version = 1
+        int $schema_version = self::SCHEMA_VERSION
     ): self {
         self::assert_environment();
 
-        if (
-            preg_match('/\A[0-9a-f]{12}\z/', $run_id) !== 1
-            || !in_array($schema_version, [1, 2], true)
-        ) {
+        if ($schema_version !== self::SCHEMA_VERSION) {
+            throw new RuntimeException(
+                'Manifest schema downgrade rejected.'
+            );
+        }
+
+        if (preg_match('/\A[0-9a-f]{12}\z/', $run_id) !== 1) {
             throw new RuntimeException(
                 'Invalid manifest initialization.'
             );
@@ -61,15 +66,6 @@ final class DilitantHttpFixtureManifest implements DilitantFixtureJournal
                     'Fixture run ID already used.'
                 );
             }
-
-            if (
-                $previous['schema_version'] === 2
-                && $schema_version === 1
-            ) {
-                throw new RuntimeException(
-                    'Manifest schema downgrade rejected.'
-                );
-            }
         }
 
         $identity = [
@@ -87,7 +83,7 @@ final class DilitantHttpFixtureManifest implements DilitantFixtureJournal
         }
 
         $data = [
-            'schema_version' => $schema_version,
+            'schema_version' => self::SCHEMA_VERSION,
             'run_id' => $run_id,
             'database_name' => DILITANT_TEST_DB_NAME,
             'table_prefix' => DILITANT_TEST_TABLE_PREFIX,
@@ -99,6 +95,7 @@ final class DilitantHttpFixtureManifest implements DilitantFixtureJournal
         ];
 
         $instance = new self($data);
+
         $instance->persist($data, $previous);
 
         return $instance;

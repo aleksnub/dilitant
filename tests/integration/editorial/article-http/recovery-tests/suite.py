@@ -1,15 +1,46 @@
 from __future__ import annotations
 
 import copy
+import sys
 
+from dataclasses import replace
+from pathlib import Path
 from typing import Any
 
-from process import RecoveryProcess, invoke, require
+
+HTTP = Path(__file__).resolve().parent.parent
+
+if str(HTTP) not in sys.path:
+    sys.path.insert(0, str(HTTP))
+
+
+from recovery_process import (
+    RecoveryConfig,
+    RecoveryProcess,
+    require,
+)
+
+
+WORKER = (
+    "/tests/integration/editorial/article-http/"
+    "recovery-tests/worker.php"
+)
 
 
 class RecoverySuiteBase(RecoveryProcess):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(
+        self,
+        config: RecoveryConfig | None = None,
+    ) -> None:
+        if config is None:
+            config = RecoveryConfig()
+
+        super().__init__(
+            config=replace(
+                config,
+                worker=WORKER,
+            ),
+        )
 
         current = self.manifest("status")
 
@@ -182,13 +213,9 @@ class RecoverySuiteBase(RecoveryProcess):
         run_id = checkpoint["manifest"]["run_id"]
 
         if sql_failure:
-            self.assert_container()
-
-            result = invoke(
-                self.worker_args(
-                    "sql-failure",
-                    run_id,
-                ),
+            result = self.worker_command(
+                "sql-failure",
+                run_id,
                 check=False,
             )
 
@@ -196,6 +223,7 @@ class RecoverySuiteBase(RecoveryProcess):
                 "HF09 SQL failure injected" in result.stderr,
                 "SQL failure injection was not executed.",
             )
+
         else:
             result = self.manifest_command(
                 "cleanup",

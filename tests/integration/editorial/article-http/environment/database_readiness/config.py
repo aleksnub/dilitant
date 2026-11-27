@@ -1,0 +1,41 @@
+"""Конфигурация независимого SQL Probe."""
+
+
+DATABASE_READINESS_TIMEOUT = 30
+
+CLEANUP_TIMEOUT = 15
+
+PROBE_OWNER_LABEL = (
+    "org.dilitant.editorial.database-readiness"
+)
+
+
+ALLOWED_ERRORS = frozenset({
+    "INVALID_ENVIRONMENT",
+    "INVALID_DATABASE_ENDPOINT",
+    "INVALID_DATABASE_PORT",
+    "MYSQLI_INITIALIZATION_FAILED",
+    "CONNECT_TIMEOUT_CONFIGURATION_FAILED",
+    "READ_TIMEOUT_UNAVAILABLE",
+    "READ_TIMEOUT_CONFIGURATION_FAILED",
+    "INVALID_QUERY_RESULT",
+    "INVALID_QUERY_ROW_COUNT",
+    "INVALID_QUERY_RESPONSE",
+    "INCOMPLETE_QUERY_RESPONSE",
+    "CONNECTION_NOT_CONFIRMED",
+    "SQL_AUTHENTICATION_FAILED",
+    "SQL_AUTHORIZATION_FAILED",
+    "DATABASE_NOT_FOUND",
+    "DATABASE_UNREACHABLE",
+    "SQL_OPERATION_FAILED",
+    "DATABASE_READINESS_FAILED",
+})
+
+
+EXPECTED_RESPONSE_FIELDS = frozenset({
+    "status",
+    "database_name",
+    "authenticated_account",
+    "connection_account",
+    "connection_ok",
+})
